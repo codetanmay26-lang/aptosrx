@@ -1,7 +1,7 @@
 import { Link } from 'wouter';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Stethoscope, Building2, ArrowRight, Zap } from 'lucide-react';
+import { Stethoscope, Building2, ArrowRight, Zap, User, BarChart3, History } from 'lucide-react';
 
 export default function Home() {
   return (
@@ -54,7 +54,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto relative z-10">
+      <section className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto relative z-10">
         <Card className="group hover:shadow-2xl hover:scale-[1.02] transition-all duration-300 border border-border/40 hover:border-primary/30 bg-white/80 backdrop-blur-sm supports-[backdrop-filter]:bg-white/70 overflow-hidden relative">
           {/* Card background accent */}
           <div className="absolute top-0 right-0 w-40 h-40 bg-primary/5 rounded-full blur-2xl -z-10" />
@@ -95,6 +95,72 @@ export default function Home() {
             <Link href="/pharmacy">
               <Button variant="outline" className="w-full gap-2 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-500/30 hover:shadow-lg hover:shadow-blue-500/20 transition-all text-foreground border-border/50" data-testid="button-go-to-pharmacy">
                 Go to Pharmacy Portal
+                <ArrowRight className="w-4 h-4" />
+              </Button>
+            </Link>
+          </CardContent>
+        </Card>
+
+        <Card className="group hover:shadow-2xl hover:scale-[1.02] transition-all duration-300 border border-border/40 hover:border-emerald-500/30 bg-white/80 backdrop-blur-sm supports-[backdrop-filter]:bg-white/70 overflow-hidden relative">
+          <div className="absolute top-0 right-0 w-40 h-40 bg-emerald-500/5 rounded-full blur-2xl -z-10" />
+
+          <CardHeader className="space-y-3">
+            <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-emerald-500/15 to-emerald-500/5 flex items-center justify-center border border-emerald-500/20 group-hover:scale-110 group-hover:shadow-lg group-hover:shadow-emerald-500/20 transition-all">
+              <User className="w-7 h-7 text-emerald-600" />
+            </div>
+            <CardTitle className="text-2xl text-foreground">Patient Portal</CardTitle>
+            <CardDescription className="leading-relaxed text-muted-foreground">
+              View prescriptions in real-time, track status, and download records securely.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Link href="/patient">
+              <Button variant="outline" className="w-full gap-2 hover:bg-emerald-50 hover:text-emerald-600 hover:border-emerald-500/30 hover:shadow-lg hover:shadow-emerald-500/20 transition-all text-foreground border-border/50">
+                Go to Patient Portal
+                <ArrowRight className="w-4 h-4" />
+              </Button>
+            </Link>
+          </CardContent>
+        </Card>
+
+        <Card className="group hover:shadow-2xl hover:scale-[1.02] transition-all duration-300 border border-border/40 hover:border-purple-500/30 bg-white/80 backdrop-blur-sm supports-[backdrop-filter]:bg-white/70 overflow-hidden relative">
+          <div className="absolute top-0 right-0 w-40 h-40 bg-purple-500/5 rounded-full blur-2xl -z-10" />
+
+          <CardHeader className="space-y-3">
+            <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-purple-500/15 to-purple-500/5 flex items-center justify-center border border-purple-500/20 group-hover:scale-110 group-hover:shadow-lg group-hover:shadow-purple-500/20 transition-all">
+              <History className="w-7 h-7 text-purple-600" />
+            </div>
+            <CardTitle className="text-2xl text-foreground">History</CardTitle>
+            <CardDescription className="leading-relaxed text-muted-foreground">
+              Search, filter, and export all prescriptions with a real-time audit trail.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Link href="/history">
+              <Button variant="outline" className="w-full gap-2 hover:bg-purple-50 hover:text-purple-600 hover:border-purple-500/30 hover:shadow-lg hover:shadow-purple-500/20 transition-all text-foreground border-border/50">
+                View History
+                <ArrowRight className="w-4 h-4" />
+              </Button>
+            </Link>
+          </CardContent>
+        </Card>
+
+        <Card className="group hover:shadow-2xl hover:scale-[1.02] transition-all duration-300 border border-border/40 hover:border-amber-500/30 bg-white/80 backdrop-blur-sm supports-[backdrop-filter]:bg-white/70 overflow-hidden relative">
+          <div className="absolute top-0 right-0 w-40 h-40 bg-amber-500/5 rounded-full blur-2xl -z-10" />
+
+          <CardHeader className="space-y-3">
+            <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-amber-500/15 to-amber-500/5 flex items-center justify-center border border-amber-500/20 group-hover:scale-110 group-hover:shadow-lg group-hover:shadow-amber-500/20 transition-all">
+              <BarChart3 className="w-7 h-7 text-amber-600" />
+            </div>
+            <CardTitle className="text-2xl text-foreground">Analytics</CardTitle>
+            <CardDescription className="leading-relaxed text-muted-foreground">
+              Live insights on issued vs. used prescriptions and verification rates.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Link href="/analytics">
+              <Button variant="outline" className="w-full gap-2 hover:bg-amber-50 hover:text-amber-600 hover:border-amber-500/30 hover:shadow-lg hover:shadow-amber-500/20 transition-all text-foreground border-border/50">
+                View Analytics
                 <ArrowRight className="w-4 h-4" />
               </Button>
             </Link>
