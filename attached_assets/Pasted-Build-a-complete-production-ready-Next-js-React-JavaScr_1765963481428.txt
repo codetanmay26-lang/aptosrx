@@ -1,0 +1,374 @@
+Build a complete, production‑ready Next.js (React, JavaScript) dApp called AptosRx that:
+
+Runs on Vercel (frontend only, no custom Node/Express backend).
+
+Talks directly to the Aptos blockchain using the Aptos JavaScript/TypeScript SDK from the browser.
+
+Uses Petra Wallet via Aptos Wallet Adapter for signing.
+
+Optionally uses Firebase (client SDK) to store full prescription data off‑chain (while only hashes go on Aptos).
+
+Everything must be in JavaScript, not TypeScript:
+
+.js and .jsx files (no .ts or .tsx).
+
+No type annotations.
+
+1. Simple Architecture Explanation (Short)
+Explain briefly (for a beginner):
+
+Aptos is a Layer‑1 blockchain (like Ethereum/Solana), not a hosting provider or DB.
+
+The stack we will build:
+
+Next.js React app (JavaScript) on Vercel → UI + wallet + calling Aptos.
+
+Move smart contract on Aptos Testnet with functions:
+
+issue_prescription
+
+verify_prescription
+
+Optional Firebase for storing full prescription JSON; only hash + state go on Aptos.
+
+2. Move Smart Contract (Aptos)
+Provide a minimal Move module with:
+
+Module name: module <ACCOUNT_ADDRESS>::aptos_rx_prescription { ... }
+
+struct Prescription with:
+
+id: u64
+
+doctor: address
+
+data_hash: vector<u8>
+
+timestamp: u64
+
+is_used: bool
+
+Storage mapping from u64 to Prescription (table/resource).
+
+public entry fun issue_prescription(doctor: &signer, prescription_id: u64, data_hash: vector<u8>)
+
+Fails if prescription_id already exists.
+
+Stores a new Prescription with doctor = signer, timestamp = now, is_used = false.
+
+public fun verify_prescription(prescription_id: u64, data_hash: vector<u8>): bool
+
+Returns true if id exists, hash matches, and is_used == false, else false.
+
+Optionally add:
+
+public entry fun mark_used(doctor: &signer, prescription_id: u64) to mark a prescription as used.
+
+Also include:
+
+Minimal Move.toml showing how to include the module.
+
+CLI steps (commands) to:
+
+Install Aptos CLI.
+
+Initialize a Move project.
+
+Configure a Testnet profile.
+
+Publish the module to Aptos Testnet.
+
+Assume the user will replace <ACCOUNT_ADDRESS> with their Aptos account address.
+
+3. Frontend Tech Stack (JavaScript Only)
+Specify:
+
+Framework: Next.js (JavaScript template – no TypeScript).
+
+Language: JavaScript (.js / .jsx).
+
+Wallet: Petra Wallet via Aptos Wallet Adapter.
+
+Blockchain SDK: Official Aptos JS/TS SDK (used from JavaScript).
+
+Styling: TailwindCSS.
+
+Optional Off‑Chain Storage: Firebase (Firestore or Realtime Database) via web client SDK.
+
+4. Project Structure (Next.js + JS)
+Use a structure like:
+
+text
+aptosrx-frontend/
+├── package.json
+├── next.config.js
+├── postcss.config.js
+├── tailwind.config.js
+├── jsconfig.json
+├── public/
+├── styles/
+│   └── globals.css
+└── pages/
+    ├── _app.js
+    ├── index.js
+    ├── doctor.js
+    └── pharmacy.js
+└── components/
+    ├── Layout.jsx
+    ├── WalletProvider.jsx
+    ├── DoctorIssueForm.jsx
+    └── PharmacyVerifyForm.jsx
+└── lib/
+    ├── aptosClient.js
+    ├── hash.js
+    └── firebase.js (optional)
+All code should be in JavaScript.
+
+5. Setup & Install Commands (JS Version)
+5.1 Create Next.js app (JavaScript)
+bash
+npx create-next-app@latest aptosrx-frontend
+cd aptosrx-frontend
+(Choose JavaScript, not TypeScript, during prompts.)
+
+5.2 Install dependencies
+Aptos SDK + Wallet Adapter + hashing:
+
+bash
+npm install @aptos-labs/ts-sdk @aptos-labs/wallet-adapter-react @aptos-labs/wallet-adapter-petra js-sha256
+TailwindCSS:
+
+bash
+npm install -D tailwindcss postcss autoprefixer
+npx tailwindcss init -p
+Optional Firebase:
+
+bash
+npm install firebase
+5.3 Tailwind config
+Show:
+
+tailwind.config.js with content targeting ./pages/**/*.{js,jsx} and ./components/**/*.{js,jsx}.
+
+Minimal styles/globals.css with Tailwind base/components/utilities imports.
+
+6. Aptos Client & Hash Helpers (JavaScript)
+6.1 lib/aptosClient.js
+Create a JS module that:
+
+Imports the Aptos TS SDK (but used from JS).
+
+Creates a client pointing to Testnet: URL from process.env.NEXT_PUBLIC_APTOS_NODE_URL (default to https://fullnode.testnet.aptoslabs.com/v1 if missing).
+
+Exports functions like:
+
+js
+export async function buildIssuePrescriptionPayload(prescriptionId, dataHashHex) { ... }
+export async function verifyPrescription(prescriptionId, dataHashHex) { ... }
+buildIssuePrescriptionPayload:
+
+Returns a transaction payload object for calling issue_prescription on the deployed module.
+
+verifyPrescription:
+
+Calls a view/simulate function (or reads state) to check if the prescription is valid.
+
+Use plain JS, no types.
+
+6.2 lib/hash.js
+Use js-sha256:
+
+js
+import { sha256 } from 'js-sha256';
+
+export function hashPrescription(data) {
+  const json = JSON.stringify(data);
+  const hashHex = sha256(json); // string hex
+  return hashHex;
+}
+Explain that only this hash is sent to Aptos.
+
+7. Wallet Integration with Petra (JS)
+7.1 components/WalletProvider.jsx
+Use @aptos-labs/wallet-adapter-react and @aptos-labs/wallet-adapter-petra.
+
+Set up a WalletProvider component that wraps children in:
+
+jsx
+<AptosWalletAdapterProvider wallets={[new PetraWallet()]} autoConnect={true}>
+  {children}
+</AptosWalletAdapterProvider>
+(using the correct current API).
+
+7.2 _app.js
+Import WalletProvider and globals.css.
+
+Wrap all pages in WalletProvider.
+
+Optionally wrap in Layout for nav bar.
+
+7.3 components/Layout.jsx
+Simple layout with:
+
+Title “AptosRx”.
+
+Network label: “Aptos Testnet”.
+
+A connect/disconnect button using wallet adapter hooks (useWallet), showing the short address when connected.
+
+All code in JavaScript/JSX, no types.
+
+8. Doctor Page: Issue Prescription (JS)
+pages/doctor.js:
+
+Components:
+
+Form fields:
+
+patientId
+
+drugName
+
+dosage
+
+notes
+
+prescriptionId (number or string; can auto-generate some default).
+
+On submit:
+
+Construct a JS object: { patientId, drugName, dosage, notes, prescriptionId, issuedAt: Date.now() }.
+
+Call hashPrescription(data) to get dataHashHex.
+
+If Firebase is enabled:
+
+Call savePrescription(prescriptionId, data) from firebase.js.
+
+Call buildIssuePrescriptionPayload(prescriptionId, dataHashHex) from aptosClient.js.
+
+Use wallet adapter’s signAndSubmitTransaction (or equivalent) with the payload from Petra.
+
+Show:
+
+Transaction hash.
+
+Link to Aptos Testnet explorer.
+
+Success message.
+
+Handle:
+
+Loading state while submitting.
+
+Error display if transaction fails.
+
+Basic validation (e.g., all required fields filled).
+
+Use only JavaScript/JSX.
+
+9. Pharmacy Page: Verify Prescription (JS)
+pages/pharmacy.js:
+
+Form fields:
+
+prescriptionId.
+
+Either:
+
+Full details (patientId, drugName, dosage, notes), or
+
+A button “Fetch from Firebase” by ID (if Firebase used).
+
+On verify:
+
+If using Firebase:
+
+Call getPrescription(prescriptionId) to fetch data.
+
+Hash the data again using hashPrescription(...) to get dataHashHex.
+
+Call verifyPrescription(prescriptionId, dataHashHex) from aptosClient.js.
+
+Display result:
+
+“✅ Authentic and Unused” when true.
+
+“❌ Invalid / Mismatched / Already Used” when false.
+
+No need to sign a transaction if verify is implemented as a pure/view function; use simulate/read method.
+
+10. Optional Firebase Integration (JS)
+10.1 lib/firebase.js
+Import firebase/app and firebase/firestore or firebase/database.
+
+Initialize Firebase app using NEXT_PUBLIC_FIREBASE_* env variables.
+
+Export:
+
+js
+export async function savePrescription(prescriptionId, data) { ... }
+export async function getPrescription(prescriptionId) { ... }
+Use plain JS, no types.
+
+10.2 Environment Variables
+In .env.local (and later in Vercel):
+
+NEXT_PUBLIC_FIREBASE_API_KEY=...
+
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=...
+
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=...
+
+etc.
+
+11. Home Page & Navigation (JS)
+pages/index.js:
+
+Simple landing page with:
+
+Title/description of AptosRx.
+
+Two buttons:
+
+“I am a Doctor” → link /doctor.
+
+“I am a Pharmacy” → link /pharmacy.
+
+Use Tailwind for a basic responsive layout.
+
+12. Environment & Vercel Deployment
+Explain clearly:
+
+Local env:
+
+Create .env.local with:
+
+NEXT_PUBLIC_APTOS_NODE_URL=https://fullnode.testnet.aptoslabs.com/v1
+
+NEXT_PUBLIC_APTOS_CONTRACT_ADDRESS=0x... (the published module account)
+
+Firebase keys if used.
+
+Vercel deployment steps:
+
+Push the project to a GitHub repository.
+
+In Vercel:
+
+Import the repository.
+
+Set the same env vars in Project → Settings → Environment Variables.
+
+Deploy.
+
+Check:
+
+Site loads.
+
+Wallet connect works with Petra on Testnet.
+
+Doctor flow can issue a prescription.
+
+Pharmacy flow can verify.
+

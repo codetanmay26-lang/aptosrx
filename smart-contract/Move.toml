@@ -1,0 +1,17 @@
+[package]
+name = "AptosRxPrescription"
+version = "1.0.0"
+authors = []
+
+[addresses]
+aptos_rx = "0xf9f98850f8c4cdc9face74dade09e4a4e5334a96ad02ff5b1ec1292f40bcb4bb"
+
+[dev-addresses]
+aptos_rx = "0xf9f98850f8c4cdc9face74dade09e4a4e5334a96ad02ff5b1ec1292f40bcb4bb"
+
+[dependencies.AptosFramework]
+git = "https://github.com/aptos-labs/aptos-core.git"
+rev = "mainnet"
+subdir = "aptos-move/framework/aptos-framework"
+
+[dev-dependencies]
