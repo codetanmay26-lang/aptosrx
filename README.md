@@ -10,7 +10,7 @@
 
 ## ▸ Overview
 
-AptosRx lets doctors issue tamper-resistant prescriptions and pharmacies verify them. On-chain hashes ensure authenticity; Firestore stores a friendly off-chain record for quick lookups.
+AptosRx lets doctors issue tamper-resistant prescriptions and pharmacies verify them. On-chain hashes ensure authenticity; Firestore stores a real-time off-chain record for fast lookups and analytics.
 
 ### ▸ Problem
 - Paper or PDF prescriptions are easy to forge or modify
@@ -20,9 +20,13 @@ AptosRx lets doctors issue tamper-resistant prescriptions and pharmacies verify 
 ## ▸ Key Features
 
 - 🔹 **Doctor Dashboard** – Create prescriptions; data is hashed (SHA-256) and recorded via Aptos
-- 🔹 **Pharmacy Portal** – Verify prescriptions and mark them as used
+- 🔹 **Pharmacy Portal** – Verify prescriptions, scan QR codes, and mark them as used
+- 🔹 **QR Code Flow** – Generate and scan QR codes to auto-fill verification details
+- 🔹 **Patient Portal** – Patients can search and view prescriptions in real time
+- 🔹 **Prescription History** – Search, filter, and export prescriptions with live updates
+- 🔹 **Analytics Dashboard** – Real-time issuance/usage insights and trends
 - 🔹 **Wallet Integration** – Petra wallet via Aptos wallet adapter
-- 🔹 **Firestore Mirror** – Off-chain prescription records with status (`issued` → `used`)
+- 🔹 **Firestore Mirror** – Real-time off-chain records with status (`issued` → `used`)
 - 🔹 **Simple Flows** – Minimal steps: Issue → Verify/Mark Used
 
 ## ▸ Tech Stack
@@ -67,7 +71,7 @@ npm run dev -- --host
 ```
 ## ▸ Deployment
 
- **Live Deployment:**  https://aptos-rx.onrender.com
+ **Live Deployment:**  https://aptosrx.onrender.com
 
 ## ▸ Project Demo Video
 
@@ -84,7 +88,7 @@ npm run dev -- --host
 
 ## ▸ Firestore Data
 - Collection: `prescriptions`
-- Fields: `prescriptionId`, `patientName`, `patientAge`, `medication`, `dosage`, `doctorAddress`, `dataHash`, `status` (`issued`/`used`), `network`, timestamps (`issuedAt`, `usedAt`)
+- Fields: `prescriptionId`, `patientId`, `drugName`, `dosage`, `notes`, `doctorAddress`, `dataHash`, `txHash`, `network`, `status` (`issued`/`used`), timestamps (`issuedAt`, `usedAt`)
 
 ## ▸ Project Structure
 ```
@@ -114,5 +118,5 @@ Feature-Builder
 
 <div align="center">
   <strong>AptosRx: Decentralized Prescription Ledger</strong><br>
-  Made with ❤️ by Sudo cure
+  Made with ❤️ by Code4Care
 </div>
