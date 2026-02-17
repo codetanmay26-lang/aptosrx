@@ -62,11 +62,10 @@ export function Layout({ children }: LayoutProps) {
           <div className="flex h-16 items-center justify-between gap-4">
             <div className="flex items-center gap-3">
               <Link href="/">
-                <div className="flex items-center gap-2 cursor-pointer group">
+                <div className="flex items-center cursor-pointer group">
                   <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-blue-600 flex items-center justify-center text-white font-bold text-sm">
                     Rx
                   </div>
-                  <span className="text-lg font-bold text-foreground">AptosRx: Decentralized Prescription Ledger</span>
                 </div>
               </Link>
               <Badge variant="outline" className="hidden sm:flex items-center gap-1.5 bg-green-500/10 border-green-500/20 text-green-700">

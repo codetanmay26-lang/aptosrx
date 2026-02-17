@@ -48,8 +48,7 @@ export default function Home() {
             Blockchain-Powered Prescription Verification
           </p>
           <p className="text-muted-foreground max-w-xl mx-auto leading-relaxed">
-            Secure, transparent, and tamper-proof prescription management on the Aptos blockchain. 
-            Issue prescriptions as a doctor or verify authenticity as a pharmacy.
+            Issue tamper-resistant prescriptions, verify instantly with QR, and track usage in real time on Aptos.
           </p>
         </div>
       </section>
