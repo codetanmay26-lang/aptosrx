@@ -2,7 +2,7 @@ import { Link, useLocation } from 'wouter';
 import { useWallet } from '@aptos-labs/wallet-adapter-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Wallet, LogOut, Menu, X, Home, Stethoscope, Building2 } from 'lucide-react';
+import { Wallet, LogOut, Menu, X, Home, Stethoscope, Building2, User, History, BarChart3 } from 'lucide-react';
 import { truncateAddress } from '@/lib/hash';
 import { useState } from 'react';
 
@@ -37,6 +37,9 @@ export function Layout({ children }: LayoutProps) {
     { href: '/', label: 'Home', icon: Home },
     { href: '/doctor', label: 'Doctor', icon: Stethoscope },
     { href: '/pharmacy', label: 'Pharmacy', icon: Building2 },
+    { href: '/patient', label: 'Patient', icon: User },
+    { href: '/history', label: 'History', icon: History },
+    { href: '/analytics', label: 'Analytics', icon: BarChart3 },
   ];
 
   return (

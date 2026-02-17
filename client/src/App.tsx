@@ -8,6 +8,9 @@ import { Layout } from "@/components/Layout";
 import Home from "@/pages/Home";
 import Doctor from "@/pages/Doctor";
 import Pharmacy from "@/pages/Pharmacy";
+import Patient from "@/pages/Patient";
+import History from "@/pages/History";
+import Analytics from "@/pages/Analytics";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -17,6 +20,9 @@ function Router() {
         <Route path="/" component={Home} />
         <Route path="/doctor" component={Doctor} />
         <Route path="/pharmacy" component={Pharmacy} />
+        <Route path="/patient" component={Patient} />
+        <Route path="/history" component={History} />
+        <Route path="/analytics" component={Analytics} />
         <Route component={NotFound} />
       </Switch>
     </Layout>
