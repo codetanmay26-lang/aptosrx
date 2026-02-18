@@ -66,8 +66,8 @@ export function QRCodeGenerator({ prescriptionId, dataHash, doctorAddress, patie
             <QRCodeSVG
               id="qr-code-canvas"
               value={qrData}
-              size={256}
-              level="H"
+              size={384}
+              level="L"
               includeMargin={true}
             />
           </div>

@@ -24,11 +24,13 @@ import {
   Wallet,
   FileText,
   Copy,
-  Check
+  Check,
+  QrCode
 } from 'lucide-react';
 import { hashPrescription, generatePrescriptionId, PrescriptionData, truncateAddress } from '@/lib/hash';
 import { buildIssuePrescriptionPayload, getExplorerUrl, isUsingDefaultAddress, APTOS_NODE_URL } from '@/lib/aptosClient';
 import { savePrescriptionRecord } from '@/lib/firebase';
+import { QRCodeGenerator } from '@/components/QRCodeGenerator';
 
 const prescriptionSchema = z.object({
   patientId: z.string().min(1, 'Patient ID is required'),
@@ -47,6 +49,10 @@ interface TransactionResult {
   prescriptionId?: string;
   dataHash?: string;
   doctorAddress?: string;
+  patientId?: string;
+  drugName?: string;
+  dosage?: string;
+  notes?: string;
   demoMode?: boolean;
 }
 
@@ -56,6 +62,7 @@ export default function Doctor() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [result, setResult] = useState<TransactionResult | null>(null);
   const [copied, setCopied] = useState<string | null>(null);
+  const [showQRCode, setShowQRCode] = useState(false);
 
   const form = useForm<PrescriptionFormData>({
     resolver: zodResolver(prescriptionSchema),
@@ -72,6 +79,17 @@ export default function Doctor() {
     await navigator.clipboard.writeText(text);
     setCopied(field);
     setTimeout(() => setCopied(null), 2000);
+  };
+
+  const handleReset = () => {
+    form.reset({
+      patientId: '',
+      drugName: '',
+      dosage: '',
+      notes: '',
+      prescriptionId: generatePrescriptionId(),
+    });
+    setResult(null);
   };
 
   const onSubmit = async (data: PrescriptionFormData) => {
@@ -106,6 +124,10 @@ export default function Doctor() {
         prescriptionId: data.prescriptionId,
         dataHash: dataHash,
         doctorAddress: account.address.toString(),
+        patientId: data.patientId,
+        drugName: data.drugName,
+        dosage: data.dosage,
+        notes: data.notes || '',
         demoMode: isUsingDefaultAddress,
       });
 
@@ -155,6 +177,10 @@ export default function Doctor() {
             prescriptionId: data.prescriptionId,
           }),
           doctorAddress: account.address.toString(),
+          patientId: data.patientId,
+          drugName: data.drugName,
+          dosage: data.dosage,
+          notes: data.notes || '',
           demoMode: true,
         });
         
@@ -204,6 +230,19 @@ export default function Doctor() {
 
   return (
     <div className="max-w-2xl mx-auto space-y-6">
+      {showQRCode && result?.success && (
+        <QRCodeGenerator
+          prescriptionId={result.prescriptionId || ''}
+          dataHash={result.dataHash || ''}
+          doctorAddress={result.doctorAddress || ''}
+          patientId={result.patientId || ''}
+          drugName={result.drugName || ''}
+          dosage={result.dosage || ''}
+          notes={result.notes || ''}
+          onClose={() => setShowQRCode(false)}
+        />
+      )}
+
       <div className="space-y-2 animate-fade-in">
         <h1 className="text-4xl font-bold bg-gradient-to-r from-foreground to-primary bg-clip-text text-transparent">Issue New Prescription</h1>
         <p className="text-muted-foreground">
@@ -437,6 +476,15 @@ export default function Doctor() {
                     <code className="text-xs font-mono bg-background px-2 py-1 rounded block break-all">
                       {result.dataHash}
                     </code>
+                  </div>
+                  <div className="flex gap-2 mt-6">
+                    <Button onClick={() => setShowQRCode(true)} className="flex-1 gap-2" variant="default">
+                      <QrCode className="w-4 h-4" />
+                      Show QR Code
+                    </Button>
+                    <Button onClick={handleReset} className="flex-1" variant="outline">
+                      Issue Another
+                    </Button>
                   </div>
                 </div>
               </div>

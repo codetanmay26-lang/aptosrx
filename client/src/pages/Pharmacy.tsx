@@ -21,11 +21,13 @@ import {
   XCircle, 
   Search,
   Shield,
-  AlertTriangle
+  AlertTriangle,
+  QrCode
 } from 'lucide-react';
 import { hashPrescription, PrescriptionData, truncateAddress } from '@/lib/hash';
 import { verifyPrescription, isUsingDefaultAddress, buildMarkUsedPayload } from '@/lib/aptosClient';
 import { markPrescriptionUsed } from '@/lib/firebase';
+import { QRScanner } from '@/components/QRScanner';
 
 const verifySchema = z.object({
   prescriptionId: z.string().min(1, 'Prescription ID is required'),
@@ -53,6 +55,7 @@ export default function Pharmacy() {
   const [isVerifying, setIsVerifying] = useState(false);
   const [isMarking, setIsMarking] = useState(false);
   const [result, setResult] = useState<VerificationResult | null>(null);
+  const [showQRScanner, setShowQRScanner] = useState(false);
 
   const form = useForm<VerifyFormData>({
     resolver: zodResolver(verifySchema),
@@ -139,6 +142,16 @@ export default function Pharmacy() {
     setResult(null);
   };
 
+  const handleQRScan = (qrData: { prescriptionId: string; doctorAddress: string; dataHash: string; patientId: string; drugName: string; dosage: string; notes: string }) => {
+    form.setValue('prescriptionId', qrData.prescriptionId);
+    form.setValue('doctorAddress', qrData.doctorAddress);
+    form.setValue('patientId', qrData.patientId);
+    form.setValue('drugName', qrData.drugName);
+    form.setValue('dosage', qrData.dosage);
+    form.setValue('notes', qrData.notes);
+    setShowQRScanner(false);
+  };
+
   const handleMarkUsed = async () => {
     if (!result?.verified || !result.prescriptionId || !connected || !account) return;
 
@@ -159,12 +172,30 @@ export default function Pharmacy() {
 
   return (
     <div className="max-w-2xl mx-auto space-y-6">
+      {showQRScanner && (
+        <QRScanner
+          onScanSuccess={handleQRScan}
+          onClose={() => setShowQRScanner(false)}
+        />
+      )}
+
       <div className="space-y-2 animate-fade-in">
         <h1 className="text-4xl font-bold bg-gradient-to-r from-foreground to-blue-600 bg-clip-text text-transparent">Verify Prescription</h1>
         <p className="text-muted-foreground">
           Enter the prescription details and doctor's wallet address to verify authenticity against the blockchain record.
         </p>
       </div>
+
+      <Button 
+        onClick={() => setShowQRScanner(true)}
+        className="w-full gap-2"
+        variant="outline"
+        size="lg"
+        data-testid="button-scan-qr"
+      >
+        <QrCode className="w-5 h-5" />
+        Scan QR Code
+      </Button>
 
       <Card className="border-l-4 border-l-blue-500/50 overflow-hidden backdrop-blur supports-[backdrop-filter]:bg-background/80">
         <div className="absolute top-0 right-0 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl -z-10" />
@@ -296,7 +327,7 @@ export default function Pharmacy() {
               <div className="flex gap-3">
                 <Button 
                   type="submit" 
-                  className="flex-1"
+                  className="w-full"
                   disabled={isVerifying}
                   data-testid="button-verify-prescription"
                 >
